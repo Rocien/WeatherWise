@@ -7,7 +7,7 @@
 
 import Foundation
 
-// created icons here to be reusable anytime and anywhere
+// created icons here to be reusable
 func mapWeatherIcon(_ iconCode: String) -> String {
     switch iconCode {
     case "01d": return "sun.max.fill" // Clear sky (day)

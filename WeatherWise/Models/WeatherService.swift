@@ -29,7 +29,7 @@ class WeatherService {
     let apiKey = "abe605e9339d49f8a6453cd5c439ff84"
 
     func fetchWeather(for city: String, completion: @escaping (Result<WeatherResponse, Error>) -> Void) async {
-        let urlString = "https://api.openweathermap.org/data/2.5/weather?q=paris&appid=\(apiKey)&units=metric"
+        let urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric"
         guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
             return
