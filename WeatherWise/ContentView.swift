@@ -9,7 +9,20 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        CityListView()
+        // creating tabBar to navigate between settings and cities
+        TabView {
+            CityListView() // this call citylistview page
+                .tabItem {
+                    Image(systemName: "list.dash")
+                    Text("Cities")
+                }
+
+            SettingsView() // and this call the settings page
+                .tabItem {
+                    Image(systemName: "gearshape")
+                    Text("Settings")
+                }
+        }
     }
 }
 
