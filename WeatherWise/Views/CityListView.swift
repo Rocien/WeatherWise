@@ -25,25 +25,27 @@ struct CityListView: View {
                     ProgressView("Fetching weather data...")
                 } else {
                     ForEach(cities) { city in
-                        HStack {
-                            Image(systemName: city.icon)
-                                .font(.largeTitle)
-                                .foregroundColor(.blue)
-                            VStack(alignment: .leading) {
-                                Text(city.name)
-                                    .font(.headline)
-                                Text(city.weatherDescription)
-                                    .font(.subheadline)
-                                Text(city.localTime)
-                                    .font(.footnote)
-                                    .foregroundColor(.gray)
+                        NavigationLink(destination: CityDetailView(city: city)) { // making each city tappable
+                            HStack {
+                                Image(systemName: city.icon)
+                                    .font(.largeTitle)
+                                    .foregroundColor(.blue)
+                                VStack(alignment: .leading) {
+                                    Text(city.name)
+                                        .font(.headline)
+                                    Text(city.weatherDescription)
+                                        .font(.subheadline)
+                                    Text(city.localTime)
+                                        .font(.footnote)
+                                        .foregroundColor(.gray)
+                                }
+                                Spacer()
+                                Text(city.temperature)
+                                    .font(.title)
+                                    .bold()
                             }
-                            Spacer()
-                            Text(city.temperature)
-                                .font(.title)
-                                .bold()
+                            .padding(.vertical, 8)
                         }
-                        .padding(.vertical, 8)
                     }
                     .onDelete(perform: deleteCity) // called the deleteCity function
                 }
@@ -102,7 +104,8 @@ struct CityListView: View {
                             temperature: "\(Int(weather.main.temp))°C",
                             weatherDescription: weather.weather.first?.description.capitalized ?? "Unknown",
                             icon: mapWeatherIcon(weather.weather.first?.icon ?? "questionmark"),
-                            localTime: getCurrentLocalTime(for: weather.timezone)
+                            localTime: getCurrentLocalTime(for: weather.timezone),
+                            coord: weather.coord
                         )
                         cities.append(cityData)
                     case .failure(let error):
