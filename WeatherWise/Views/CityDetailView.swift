@@ -8,8 +8,6 @@
 import MapKit
 import SwiftUI
 
-import SwiftUI
-
 struct CityDetailView: View {
     var city: City
     @State private var weatherDetails: WeatherResponse?
@@ -18,32 +16,24 @@ struct CityDetailView: View {
 
     var body: some View {
         ZStack {
-            // map in the background
+            // Use MapView for the map background
             MapView(cityName: city.name)
                 .ignoresSafeArea()
 
-            // overlay with weather details
-            VStack {
-                if let weatherDetails = weatherDetails {
-                    // Display weather details when loaded
-                    VStack(alignment: .leading) {
-                        Text(city.name)
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
+            if let weatherDetails = weatherDetails {
+                VStack(alignment: .leading) {
+                    Text(weatherDetails.name)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
 
-                        Text("Temperature: \(Int(weatherDetails.main.temp))°C")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                    Text("Temperature: \(Int(weatherDetails.main.temp))°C")
+                        .font(.headline)
+                        .foregroundColor(.white)
 
-                        Spacer().frame(height: 20)
-
-                        // weather details row
-                        HStack {
-                            WeatherDetailView(icon: "sun.max", label: "UV Index", value: "N/A")
-                            WeatherDetailView(icon: "wind", label: "Wind", value: "\(weatherDetails.wind.speed) m/s")
-                            WeatherDetailView(icon: "humidity", label: "Humidity", value: "\(weatherDetails.main.humidity)%")
-                        }
+                    HStack {
+                        WeatherDetailView(icon: "wind", label: "Wind", value: "\(weatherDetails.wind.speed) m/s")
+                        WeatherDetailView(icon: "humidity", label: "Humidity", value: "\(weatherDetails.main.humidity)%")
                     }
                     .padding()
                     .background(
@@ -51,14 +41,16 @@ struct CityDetailView: View {
                             .fill(Color.black.opacity(0.6))
                     )
                     .padding()
-                } else if isLoading {
-                    ProgressView("Loading weather details...")
-                        .foregroundColor(.white)
-                } else if let errorMessage = errorMessage {
-                    Text("Error: \(errorMessage)")
-                        .foregroundColor(.red)
+
+                    Spacer()
                 }
-                Spacer()
+                .padding()
+            } else if isLoading {
+                ProgressView("Loading weather details...")
+                    .foregroundColor(.white)
+            } else if let errorMessage = errorMessage {
+                Text("Error: \(errorMessage)")
+                    .foregroundColor(.red)
             }
         }
         .onAppear {
@@ -67,15 +59,16 @@ struct CityDetailView: View {
     }
 
     private func fetchDetails() {
+        isLoading = true
         Task {
-            await WeatherService().fetchWeatherDetails(lat: city.coord.lat, lon: city.coord.lon) { result in
+            await WeatherService().fetchWeather(for: city.name) { result in
                 DispatchQueue.main.async {
                     isLoading = false
                     switch result {
                     case .success(let details):
-                        self.weatherDetails = details
+                        weatherDetails = details
                     case .failure(let error):
-                        self.errorMessage = error.localizedDescription
+                        errorMessage = error.localizedDescription
                     }
                 }
             }

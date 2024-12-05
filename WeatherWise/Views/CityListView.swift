@@ -25,7 +25,9 @@ struct CityListView: View {
                     ProgressView("Fetching weather data...")
                 } else {
                     ForEach(cities) { city in
-                        NavigationLink(destination: CityDetailView(city: city)) { // making each city tappable
+                        NavigationLink(destination: CityDetailView(city: city)
+                            .transition(.move(edge: .trailing)))
+                        { // making each city tappable
                             HStack {
                                 Image(systemName: city.icon)
                                     .font(.largeTitle)
@@ -71,21 +73,8 @@ struct CityListView: View {
                 Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
             .onAppear {
-                loadInitialCities()
+                loadCityList() // Load persisted city list
             }
-        }
-    }
-
-    // swipe to the left to delete the city on the screen
-    private func deleteCity(at offsets: IndexSet) {
-        cities.remove(atOffsets: offsets)
-    }
-
-    // here i am just calling cities that will show initially when the app is launched
-    private func loadInitialCities() {
-        let initialCities = ["Ottawa", "Toronto", "Tokyo"]
-        for city in initialCities {
-            fetchWeather(for: city)
         }
     }
 
@@ -105,9 +94,12 @@ struct CityListView: View {
                             weatherDescription: weather.weather.first?.description.capitalized ?? "Unknown",
                             icon: mapWeatherIcon(weather.weather.first?.icon ?? "questionmark"),
                             localTime: getCurrentLocalTime(for: weather.timezone),
-                            coord: weather.coord
+                            coord: CityCoord(lat: weather.coord.lat, lon: weather.coord.lon)
                         )
-                        cities.append(cityData)
+                        withAnimation {
+                            cities.append(cityData) // Add city with animation
+                        }
+                        saveCityList() // Save after adding a city
                     case .failure(let error):
                         alertMessage = "Could not fetch weather for \(city). Please try again."
                         showAlert = true
@@ -118,6 +110,44 @@ struct CityListView: View {
         }
     }
 
+    // swipe to the left to delete the city on the screen
+    private func deleteCity(at offsets: IndexSet) {
+        withAnimation {
+            cities.remove(atOffsets: offsets)
+        }
+        saveCityList() // Save after deleting a city
+    }
+
+    // here i am just calling cities that will show initially when the app is launched
+    private func loadInitialCities() {
+        let initialCities = ["Ottawa", "Montreal", "Toronto", "Calgary", "Edmonton"]
+        for city in initialCities {
+            fetchWeather(for: city)
+        }
+    }
+
+    // save the city list to UserDefaults
+    private func saveCityList() {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(cities) {
+            UserDefaults.standard.set(encoded, forKey: "CityList")
+        }
+    }
+
+    // load the city list from UserDefaults
+    private func loadCityList() {
+        if let savedData = UserDefaults.standard.data(forKey: "CityList") {
+            let decoder = JSONDecoder()
+            if let decoded = try? decoder.decode([City].self, from: savedData) {
+                cities = decoded
+            }
+        } else {
+            // Load initial cities only if no saved data exists
+            loadInitialCities()
+        }
+    }
+
+    // this is the helper function to get current local time based on timezone
     private func getCurrentLocalTime(for timezoneOffset: Int) -> String {
         let date = Date()
         let localTime = date.addingTimeInterval(TimeInterval(timezoneOffset))
