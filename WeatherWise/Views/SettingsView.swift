@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var selectedInterval: Int = 15 // added 15min as default refresh interval (in minutes)
-    let refreshOptions = [5, 10, 15, 30, 60] // available options in minutes
+    @State private var selectedInterval: Int = UserDefaults.standard.integer(forKey: "RefreshInterval") == 0 ? 15 : UserDefaults.standard.integer(forKey: "RefreshInterval")
+    let refreshOptions = [5, 10, 15, 30, 60] // Available options in minutes
 
     var body: some View {
         NavigationView {
@@ -21,9 +21,11 @@ struct SettingsView: View {
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
+                    .onChange(of: selectedInterval) { newValue in
+                        UserDefaults.standard.set(newValue, forKey: "RefreshInterval")
+                    }
                 }
 
-                // navigation link to the about page
                 Section(header: Text("About")) {
                     NavigationLink(destination: AboutView()) {
                         Text("About the App")

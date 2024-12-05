@@ -16,6 +16,7 @@ struct CityListView: View {
     @State private var alertMessage: String = ""
     @State private var showAlert: Bool = false
     let weatherService = WeatherService()
+    @State private var refreshInterval: Int = UserDefaults.standard.integer(forKey: "RefreshInterval")
 
     var body: some View {
         // creating a navigation view to list cities
@@ -75,6 +76,19 @@ struct CityListView: View {
             .onAppear {
                 loadCityList() // Load persisted city list
             }
+        }
+    }
+
+    // this function to start refreshing the data based on the interval
+    private func startAutoRefresh() {
+        Timer.scheduledTimer(withTimeInterval: TimeInterval(refreshInterval * 60), repeats: true) { _ in
+            refreshWeatherData()
+        }
+    }
+
+    private func refreshWeatherData() {
+        for city in cities {
+            fetchWeather(for: city.name)
         }
     }
 
