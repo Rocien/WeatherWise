@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// this is the entry point, whatever i added here remain in entire app.
 struct ContentView: View {
     var body: some View {
         // creating tabBar to navigate between settings and cities
