@@ -74,7 +74,9 @@ struct CityListView: View {
                 Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
             .onAppear {
-                loadCityList() // Load persisted city list
+                Task {
+                    loadCityList()
+                }
             }
         }
     }

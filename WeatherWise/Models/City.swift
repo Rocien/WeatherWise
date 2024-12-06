@@ -5,12 +5,10 @@
 //  Created by Rocien Nkunga on 03/12/2024.
 //
 
-import Foundation // here to help accessing the essential data like (date and time etc...)
-
 // in this struct iam creating variables that will use later in the project, defining the data for each city
 import Foundation
 
-struct City: Identifiable, Codable {
+ struct City: Identifiable, Codable {
     let id: UUID
     var name: String
     var temperature: String
@@ -36,9 +34,9 @@ struct City: Identifiable, Codable {
         self.localTime = localTime
         self.coord = coord
     }
-}
+ }
 
-struct CityCoord: Codable {
+ struct CityCoord: Codable {
     let lat: Double
     let lon: Double
-}
+ }
