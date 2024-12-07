@@ -21,7 +21,8 @@ struct SettingsView: View {
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
-                    .onChange(of: selectedInterval) { newValue in
+//                    .onChange(of: selectedInterval) { newValue in
+                    .onChange(of: selectedInterval, initial: true) { _, newValue in
                         UserDefaults.standard.set(newValue, forKey: "RefreshInterval")
                     }
                 }

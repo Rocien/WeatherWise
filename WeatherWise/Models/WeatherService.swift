@@ -5,10 +5,11 @@
 //  Created by Rocien Nkunga on 03/12/2024.
 //
 
-import Foundation // this import the essential data to use in the project such (date, time, handling basic app data)
+import Foundation // the foundation import the essential data to use in the project such (date, time, handling basic app data) added it here as dealing with json
 
-// mapping the json structure
+// mapping the json structure from openWeather API
 struct WeatherResponse: Codable {
+    // the WeatherResponse represents the overall JSON structure returned by the API.
     let coord: Coord
     let weather: [WeatherDetail]
     let main: Main
@@ -16,6 +17,7 @@ struct WeatherResponse: Codable {
     let name: String
     let timezone: Int
 
+    // the below are just nested structures represent subparts of the JSON
     struct Coord: Codable {
         let lon: Double
         let lat: Double
@@ -43,6 +45,7 @@ struct WeatherResponse: Codable {
     }
 }
 
+// this is the forecast response structure
 struct ForecastResponse: Codable {
     let list: [ForecastDetail]
 
@@ -61,20 +64,21 @@ struct ForecastResponse: Codable {
     }
 }
 
+// this is the forecast item for the
 struct ForecastItem: Identifiable {
-    let id = UUID()
+    let id = UUID() // here the unique identifier for the item
     let time: String
     let temp: Double
     let icon: String
 }
 
-// this class using open weather API with my own key to dynamically fetch data for cities instead of hardcording.
+// this class using open weather API with my own key to dynamically fetch data for cities.
 class WeatherService {
-    let apiKey = "abe605e9339d49f8a6453cd5c439ff84"
+    let apiKey = "abe605e9339d49f8a6453cd5c439ff84" // my api key with openWeather
 
-    // this fetching call for the landing page which each the CityListView
+    // this fetching call for the CityListView in the home page
     func fetchWeather(for city: String, completion: @escaping (Result<WeatherResponse, Error>) -> Void) async {
-        let urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric"
+        let urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric" // this the url for API, set units to metric for celsius
         guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
             return
