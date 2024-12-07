@@ -5,8 +5,9 @@
 //  Created by Rocien Nkunga on 04/12/2024.
 //
 
-import MapKit
+import MapKit // importing swift Mapkit
 import SwiftUI
+
 
 struct MapView: UIViewRepresentable {
     var cityName: String

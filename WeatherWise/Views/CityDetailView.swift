@@ -78,9 +78,20 @@ struct CityDetailView: View {
     }
 }
 
-// this is the Top Section
+// this is the Top Section struck
 struct TopSection: View {
     var weatherDetails: WeatherResponse
+    @State private var isCelsius: Bool = true
+
+    // this function convert celsius to Fahrenheit
+    private var displayedTemperature: String {
+        if isCelsius {
+            return "\(Int(weatherDetails.main.temp))°C"
+        } else {
+            let fahrenheit = (weatherDetails.main.temp) * 9 / 5 + 32
+            return "\(Int(fahrenheit))°F"
+        }
+    }
 
     var body: some View {
         VStack {
@@ -89,10 +100,13 @@ struct TopSection: View {
                 .fontWeight(.bold)
                 .foregroundColor(.white)
 
-            Text("\(Int(weatherDetails.main.temp))°C")
+            Text(displayedTemperature)
                 .font(.system(size: 60))
                 .fontWeight(.light)
                 .foregroundColor(.white)
+                .onTapGesture {
+                    isCelsius.toggle()
+                }
         }
         .padding()
     }
