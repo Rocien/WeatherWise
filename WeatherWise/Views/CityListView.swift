@@ -113,9 +113,9 @@ struct CityListView: View {
                             coord: CityCoord(lat: weather.coord.lat, lon: weather.coord.lon)
                         )
                         withAnimation {
-                            cities.append(cityData) // Add city with animation
+                            cities.append(cityData) // added city with animation
                         }
-                        saveCityList() // Save after adding a city
+                        saveCityList() // save after adding a city
                     case .failure(let error):
                         alertMessage = "Could not fetch weather for \(city). Please try again."
                         showAlert = true

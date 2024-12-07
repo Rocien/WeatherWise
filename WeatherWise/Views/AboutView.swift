@@ -43,6 +43,8 @@ struct AboutView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 200, height: 200)
+                .scaleEffect(showAlternateImage ? 1.2 : 1.0)
+                .animation(.easeInOut(duration: 0.3), value: showAlternateImage)
                 .onTapGesture(count: 3) {
                     showAlternateImage.toggle()
                 }

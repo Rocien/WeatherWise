@@ -105,7 +105,9 @@ struct TopSection: View {
                 .fontWeight(.light)
                 .foregroundColor(.white)
                 .onTapGesture {
-                    isCelsius.toggle()
+                    withAnimation {
+                        isCelsius.toggle()
+                    }
                 }
         }
         .padding()
