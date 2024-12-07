@@ -26,9 +26,7 @@ struct CityListView: View {
                     ProgressView("Fetching weather data...")
                 } else {
                     ForEach(cities) { city in
-                        NavigationLink(destination: CityDetailView(city: city)
-                            .transition(.move(edge: .trailing)))
-                        { // making each city tappable
+                        NavigationLink(destination: CityDetailView(city: city)) {
                             HStack {
                                 Image(systemName: city.icon)
                                     .font(.largeTitle)
@@ -50,11 +48,15 @@ struct CityListView: View {
                             .padding(.vertical, 8)
                         }
                     }
+                    .onMove(perform: moveCity) // here enable reordering
                     .onDelete(perform: deleteCity) // called the deleteCity function
                 }
             }
             .navigationTitle("City List")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    EditButton() // toggles edit mode
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         isShowingSearch = true
@@ -81,6 +83,14 @@ struct CityListView: View {
         }
     }
 
+    // this function is for the user to move the city or rearrange
+    private func moveCity(from source: IndexSet, to destination: Int) {
+        withAnimation {
+            cities.move(fromOffsets: source, toOffset: destination)
+        }
+        saveCityList() // called saveCityList to save updated order to UserDefaults
+    }
+
     // this function to start refreshing the data based on the interval
     private func startAutoRefresh() {
         Timer.scheduledTimer(withTimeInterval: TimeInterval(refreshInterval * 60), repeats: true) { _ in
@@ -88,6 +98,7 @@ struct CityListView: View {
         }
     }
 
+    // function to refresh weather data
     private func refreshWeatherData() {
         for city in cities {
             fetchWeather(for: city.name)
