@@ -78,10 +78,12 @@ class WeatherService {
 
     // this fetching call for the CityListView in the home page
     func fetchWeather(for city: String, completion: @escaping (Result<WeatherResponse, Error>) -> Void) async {
-        let urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric" // this the url for API, set units to metric for celsius
-        guard let url = URL(string: urlString) else {
+        // this the url for API, set units to metric for celsius
+        let urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric"
+        // this block create the url object
+        guard let url = URL(string: urlString) else { // this handle error, if the string is invalid
             completion(.failure(NSError(domain: "", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
-            return
+            return // exiting the function early, make sure no code runs when the url is invalid
         }
 
         do {
@@ -102,24 +104,27 @@ class WeatherService {
             completion(.failure(NSError(domain: "", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
             return
         }
-
+        // here now making the API call with do-catch method
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let decodedResponse = try JSONDecoder().decode(ForecastResponse.self, from: data)
+            let (data, _) = try await URLSession.shared.data(from: url) // do an async network call from the url
+            let decodedResponse = try JSONDecoder().decode(ForecastResponse.self, from: data) // decode the raw json into ForecastResponse structure i created above
             let forecastItems = decodedResponse.list.map { detail in
-                ForecastItem(
+                ForecastItem( // here creating a ForecastItem object with formatted time, temperature
                     time: formatTimestamp(detail.dt),
                     temp: detail.main.temp,
-                    icon: detail.weather.first?.icon ?? "questionmark"
+                    icon: detail.weather.first?.icon ?? "questionmark" // create icon or questionmark if icon missing
                 )
             }
-            completion(.success(forecastItems))
+            completion(.success(forecastItems)) // passing the list of ForecastItem objects to the completion handler as a success result.
+
         } catch {
-            completion(.failure(error))
+            completion(.failure(error)) // or if the above fail catch the error and handle failure
         }
     }
 
+    // this block of function for the time
     private func formatTimestamp(_ timestamp: Int) -> String {
+        // converting a UNIX timestamp to a human-readable time string (HH:mm format).
         let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
