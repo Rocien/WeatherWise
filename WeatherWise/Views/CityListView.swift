@@ -115,6 +115,7 @@ struct CityListView: View {
                     // statement to display cities with weather or alert message
                     switch result {
                     case .success(let weather):
+                        print("Timezone Offset from API: \(weather.timezone)")
                         let cityData = City(
                             name: weather.name,
                             temperature: "\(Int(weather.main.temp))°C",
@@ -176,10 +177,13 @@ struct CityListView: View {
 
     // this is the helper function to get current local time based on timezone
     private func getCurrentLocalTime(for timezoneOffset: Int) -> String {
-        let date = Date()
-        let localTime = date.addingTimeInterval(TimeInterval(timezoneOffset))
+        let utcDate = Date()
+        let localDate = utcDate.addingTimeInterval(TimeInterval(timezoneOffset))
+
         let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: timezoneOffset)
         dateFormatter.dateFormat = "hh:mm a"
-        return dateFormatter.string(from: localTime)
+
+        return dateFormatter.string(from: localDate)
     }
 }

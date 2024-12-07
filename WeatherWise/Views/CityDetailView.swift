@@ -15,22 +15,53 @@ struct CityDetailView: View {
     @State private var isLoading = true
     @State private var errorMessage: String?
 
+    // this function to calculate color based on temperature
+    private func temperatureColor(for temperature: Double) -> Color {
+        switch temperature {
+        case ..<0:
+            return Color.blue
+        case 0..<15:
+            return Color.cyan
+        case 15..<25:
+            return Color.green
+        case 25..<35:
+            return Color.orange
+        default:
+            return Color.red
+        }
+    }
+
     var body: some View {
         ZStack {
+            // Map background
             MapView(cityName: city.name)
                 .ignoresSafeArea()
 
+            // here added gradient overlay
+            if let weatherDetails = weatherDetails {
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        temperatureColor(for: weatherDetails.main.temp).opacity(0.8), // Bottom intense color
+                        temperatureColor(for: weatherDetails.main.temp).opacity(0.5) // Top transparent color
+                    ]),
+                    startPoint: .bottom, // starts at the bottom
+                    endPoint: .top // fades towards the top
+                )
+                .ignoresSafeArea()
+            }
+
+            // this the main content
             if let weatherDetails = weatherDetails {
                 VStack {
-                    // this the top Section
+                    // Top Section: City Name and Temperature
                     TopSection(weatherDetails: weatherDetails)
 
                     Spacer()
 
-                    // this the bottom Section
+                    // Bottom Section: Wind, Humidity, and Forecast
                     BottomSection(weatherDetails: weatherDetails, forecast: forecast)
-                        .padding()
                 }
+                .padding()
             } else if isLoading {
                 ProgressView("Loading weather details...")
                     .foregroundColor(.white)
@@ -44,6 +75,7 @@ struct CityDetailView: View {
         }
     }
 
+    // this function fetch the city weather
     private func fetchDetails() {
         isLoading = true
         Task {
@@ -62,6 +94,7 @@ struct CityDetailView: View {
         }
     }
 
+    // this function to fetch only the forecast data
     private func fetchForecast(lat: Double, lon: Double) {
         Task {
             await WeatherService().fetchForecast(lat: lat, lon: lon) { result in
@@ -93,15 +126,16 @@ struct TopSection: View {
         }
     }
 
+    // the City and temp view here
     var body: some View {
         VStack {
             Text(weatherDetails.name)
-                .font(.largeTitle)
+                .font(.system(size: 50))
                 .fontWeight(.bold)
                 .foregroundColor(.white)
 
             Text(displayedTemperature)
-                .font(.system(size: 60))
+                .font(.system(size: 80))
                 .fontWeight(.light)
                 .foregroundColor(.white)
                 .onTapGesture {
@@ -121,7 +155,7 @@ struct BottomSection: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            // First Card: Wind and Humidity
+            // First Card Wind and Humidity
             HStack(spacing: 16) {
                 WeatherDetailView(icon: "wind", label: "Wind", value: "\(weatherDetails.wind.speed) m/s")
                 WeatherDetailView(icon: "humidity", label: "Humidity", value: "\(weatherDetails.main.humidity)%")
@@ -132,7 +166,7 @@ struct BottomSection: View {
                     .fill(Color.black.opacity(0.6))
             )
 
-            // Second Card: Forecast
+            // second Card Forecast
             VStack(alignment: .leading, spacing: 8) {
                 Text("Forecast")
                     .font(.headline)
