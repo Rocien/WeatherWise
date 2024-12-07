@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// created this component to separate the DetailView, this is for the Wind and Humidity only
 struct WeatherDetailView: View {
     var icon: String
     var label: String

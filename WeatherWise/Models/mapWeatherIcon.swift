@@ -8,8 +8,8 @@
 import Foundation
 
 // created icons here to be reusable
-func mapWeatherIcon(_ iconCode: String) -> String {
-    switch iconCode {
+func mapWeatherIcon(_ iconCode: String) -> String { // this function takes a string code and change it to a string icon name
+    switch iconCode { // this matches the iconCode (provided by OpenWeather API against predefined cases.
     case "01d": return "sun.max.fill" // Clear sky (day)
     case "01n": return "moon.stars.fill" // Clear sky (night)
     case "02d": return "cloud.sun.fill" // Few clouds (day)

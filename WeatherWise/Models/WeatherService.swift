@@ -85,10 +85,10 @@ class WeatherService {
             completion(.failure(NSError(domain: "", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
             return // exiting the function early, make sure no code runs when the url is invalid
         }
-
+        // here now making the API call with do-catch method
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            print("Raw API Response: \(String(data: data, encoding: .utf8) ?? "No Data")") // Debugging
+            print("Raw API Response: \(String(data: data, encoding: .utf8) ?? "No Data")") // just debugging
             let decodedResponse = try JSONDecoder().decode(WeatherResponse.self, from: data)
             completion(.success(decodedResponse))
         } catch let decodingError {
@@ -97,14 +97,14 @@ class WeatherService {
         }
     }
 
-    // this fetch call for the details view
-    func fetchForecast(lat: Double, lon: Double, completion: @escaping (Result<[ForecastItem], Error>) -> Void) async {
+    // this fetch call for the details view, only for the forecast
+    func fetchForecast(lat: Double, lon: Double, completion: @escaping (Result<[ForecastItem], Error>) -> Void) async { // changed the API endpoint to fetch the forecast details
         let urlString = "https://api.openweathermap.org/data/2.5/forecast?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=metric"
         guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
-            return
+            return // exiting the function early, make sure no code runs when the url is invalid
         }
-        // here now making the API call with do-catch method
+        // here now making the API call with do-catch method just as the above function
         do {
             let (data, _) = try await URLSession.shared.data(from: url) // do an async network call from the url
             let decodedResponse = try JSONDecoder().decode(ForecastResponse.self, from: data) // decode the raw json into ForecastResponse structure i created above
