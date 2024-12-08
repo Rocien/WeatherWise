@@ -18,6 +18,29 @@ struct CityListView: View {
     let weatherService = WeatherService()
     @State private var refreshInterval: Int = UserDefaults.standard.integer(forKey: "RefreshInterval")
 
+    // this function for the icon color
+    func weatherIconColor(for weatherCondition: String) -> Color {
+        switch weatherCondition.lowercased() {
+        case "clear sky", "sunny":
+            return .yellow
+        case "clouds", "overcast clouds", "broken clouds":
+            return .white
+        case "rain", "drizzle":
+            return .blue
+        case "snow":
+            return .white
+        case "mist", "fog":
+            return .purple
+        default:
+            return .blue
+        }
+    }
+
+//    init() {
+//        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+//        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
+//    }
+
     var body: some View {
         // creating a navigation view to list cities
         NavigationView {
@@ -27,32 +50,59 @@ struct CityListView: View {
                 } else {
                     ForEach(cities) { city in
                         NavigationLink(destination: CityDetailView(city: city)) {
-                            HStack {
-                                Image(systemName: city.icon)
-                                    .font(.largeTitle)
-                                    .foregroundColor(.blue)
-                                VStack(alignment: .leading) {
+                            HStack(alignment: .top) {
+                                // city name and temperature on the left
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(city.temperature)
+                                        .font(.largeTitle)
+                                        .bold()
+                                        .foregroundColor(Color.white)
                                     Text(city.name)
                                         .font(.headline)
-                                    Text(city.weatherDescription)
-                                        .font(.subheadline)
+                                        .foregroundColor(.white)
                                     Text(city.localTime)
                                         .font(.footnote)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(Color.white.opacity(0.6))
                                 }
                                 Spacer()
-                                Text(city.temperature)
-                                    .font(.title)
-                                    .bold()
+
+                                // icon and description aligned vertically on the right
+                                VStack(alignment: .center, spacing: 8) {
+                                    Image(systemName: city.icon)
+                                        .font(.largeTitle)
+                                        .foregroundColor(weatherIconColor(for: city.weatherDescription))
+                                    Text(city.weatherDescription)
+                                        .font(.subheadline)
+                                        .foregroundColor(Color.white)
+                                        .multilineTextAlignment(.center)
+                                        .font(.system(size: 50))
+                                }
+                                .frame(width: 100)
                             }
-                            .padding(.vertical, 8)
+                            .padding(.vertical, 10)
                         }
+                        .listRowBackground(Color.black.opacity(0.1))
                     }
                     .onMove(perform: moveCity) // here enable reordering
                     .onDelete(perform: deleteCity) // called the deleteCity function
+                    .listRowSeparatorTint(.white)
+                    .listRowBackground(Color.clear) // change Row Color
+                    .foregroundColor(Color.white)
                 }
             }
+
+            .background(
+                Image("background")
+                    .resizable()
+                    .scaledToFill()
+                    .ignoresSafeArea()
+            )
+            .scrollContentBackground(.hidden)
             .navigationTitle("City List")
+            .navigationBarTitleDisplayMode(.inline)
+            
+            .toolbarBackground(Color.clear, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     EditButton() // toggles edit mode
@@ -65,7 +115,7 @@ struct CityListView: View {
                     }
                 }
             }
-
+            .foregroundColor(Color.white)
             // the sheet that pop on the city screen to display the input field to search for cities
             .sheet(isPresented: $isShowingSearch) {
                 SearchView { cityName in

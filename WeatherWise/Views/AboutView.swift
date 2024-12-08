@@ -39,7 +39,7 @@ struct AboutView: View {
             Spacer()
 
             // Display image with hidden feature
-            Image(showAlternateImage ? "rocienProfile2" : "rocienProfile")
+            Image(showAlternateImage ? "rocienProfile2" : "rocienProfile-4")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 200, height: 200)
@@ -77,6 +77,14 @@ struct AboutView: View {
             Spacer()
         }
         .padding()
+        .background(
+            Image("background-2")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+        )
+        .scrollContentBackground(.hidden)
         .navigationTitle("About")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }

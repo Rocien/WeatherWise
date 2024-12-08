@@ -33,6 +33,13 @@ struct SettingsView: View {
                     }
                 }
             }
+            .background(
+                Image("background-2")
+                    .resizable()
+                    .scaledToFill()
+                    .ignoresSafeArea()
+            )
+            .scrollContentBackground(.hidden)
             .navigationTitle("Settings")
         }
     }
