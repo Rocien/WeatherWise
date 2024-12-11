@@ -62,6 +62,6 @@ Mobile app. Developer
 
 Email: [contact@rociennkunga.com](mailto:contact@rociennkunga.com)  
 GitHub: [https://github.com/Rocien](https://github.com/Rocien)  
-LinkedIn: [YourLinkedInProfile](www.linkedin.com/in/rociennkunga)
+LinkedIn: [www.linkedin.com/in/rociennkunga](www.linkedin.com/in/rociennkunga)
 Website: [https://www.rociennkunga.com/](https://www.rociennkunga.com/)
 
