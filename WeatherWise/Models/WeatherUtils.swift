@@ -1,13 +1,13 @@
 //
-//  mapWeatherIcon.swift
+//  WeatherUtils.swift
 //  WeatherWise
 //
-//  Created by Rocien Nkunga on 03/12/2024.
+//  Created by Rocien Nkunga on 10/12/2024.
 //
 
 import Foundation
 
-// created icons here to be reusable
+// maps OpenWeather API's weather icon codes to system image names
 func mapWeatherIcon(_ iconCode: String) -> String { // this function takes a string code and change it to a string icon name
     switch iconCode { // this matches the iconCode (provided by OpenWeather API against predefined cases.
     case "01d": return "sun.max.fill" // Clear sky (day)
@@ -24,4 +24,16 @@ func mapWeatherIcon(_ iconCode: String) -> String { // this function takes a str
     case "50d", "50n": return "cloud.fog.fill" // Mist
     default: return "questionmark.circle.fill" // Fallback for unknown icons
     }
+}
+
+// Calculates the local time for a city using the timezone offset
+func getCurrentLocalTime(for timezoneOffset: Int) -> String {
+    let utcDate = Date()
+    let localDate = utcDate.addingTimeInterval(TimeInterval(timezoneOffset))
+
+    let dateFormatter = DateFormatter()
+    dateFormatter.timeZone = TimeZone(secondsFromGMT: timezoneOffset)
+    dateFormatter.dateFormat = "hh:mm a"
+
+    return dateFormatter.string(from: localDate)
 }

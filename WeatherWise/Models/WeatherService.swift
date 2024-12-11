@@ -72,6 +72,18 @@ struct ForecastItem: Identifiable {
     let icon: String
 }
 
+// JSON Model for City Population API Response
+struct CityPopulationResponse: Decodable {
+    let error: Bool
+    let msg: String
+    let data: [CityData]
+
+    struct CityData: Decodable {
+        let city: String
+        let country: String
+    }
+}
+
 // this class using open weather API with my own key to dynamically fetch data for cities.
 class WeatherService {
     let apiKey = "abe605e9339d49f8a6453cd5c439ff84" // my api key with openWeather
@@ -122,12 +134,51 @@ class WeatherService {
         }
     }
 
-    // this block of function for the time
-    private func formatTimestamp(_ timestamp: Int) -> String {
-        // converting a UNIX timestamp to a human-readable time string (HH:mm format).
-        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter.string(from: date)
+    // fetch city names from the API
+    func fetchCityNames(completion: @escaping (Result<[String], Error>) -> Void) {
+        let urlString = "https://countriesnow.space/api/v0.1/countries/population/cities"
+
+        // Validate URL
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NSError(domain: "", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+            return
+        }
+
+        // Configure URLRequest
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET" // Using GET method as we’re retrieving data
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // Start the network request
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let error = error {
+                completion(.failure(error)) // Handle network error
+                return
+            }
+
+            // Ensure valid response data
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: 400, userInfo: [NSLocalizedDescriptionKey: "No Data"])))
+                return
+            }
+
+            do {
+                // Decode JSON response
+                let decodedResponse = try JSONDecoder().decode(CityPopulationResponse.self, from: data)
+                let cityNames = decodedResponse.data.map { $0.city }
+                completion(.success(cityNames))
+            } catch {
+                completion(.failure(NSError(domain: "", code: 500, userInfo: [NSLocalizedDescriptionKey: "Failed to parse city data."])))
+            }
+        }.resume()
     }
+}
+
+// this block of function for the time
+private func formatTimestamp(_ timestamp: Int) -> String {
+    // converting a UNIX timestamp to a human-readable time string (HH:mm format).
+    let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
+    let formatter = DateFormatter()
+    formatter.dateFormat = "HH:mm"
+    return formatter.string(from: date)
 }
