@@ -16,7 +16,7 @@ struct SearchView: View {
     @Environment(\.dismiss) private var dismiss // this is for dismissing the view
 
     // created variale to carry my hardcoded popular cities which will be used inside the popular city section down below
-    private let popularCities: [String] = ["Paris", "Ottawa", "Montreal", "Los Angeles"]
+    private let popularCities: [String] = ["Paris", "Ottawa", "Montreal", "London"]
 
     var body: some View {
         VStack(spacing: 20) {
