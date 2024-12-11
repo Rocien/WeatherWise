@@ -44,10 +44,11 @@ struct SearchView: View {
             // the search Bar
             HStack {
                 Image(systemName: "magnifyingglass")
-                    .foregroundColor(.black)
-                TextField("Search for a city...", text: $searchText)
+                    .foregroundColor(.gray)
+                TextField("", text: $searchText, prompt: Text("Search for a city...")
+                    .foregroundColor(.gray))
                     .textFieldStyle(PlainTextFieldStyle())
-                    .foregroundColor(Color.black.opacity(0.4))
+                    .foregroundColor(.black)
                     .padding(.leading, 5)
             }
             .padding()
@@ -156,13 +157,21 @@ struct SearchView: View {
                             localTime: getCurrentLocalTime(for: weather.timezone),
                             coord: CityCoord(lat: weather.coord.lat, lon: weather.coord.lon)
                         )
-                        cities.append(newCity) // Add the new city to the list
+                        cities.append(newCity) // adding the new city to the list
+                        saveCityList() // here saving the updated city list
                     case .failure(let error):
                         print("Error fetching weather for \(cityName): \(error.localizedDescription)")
                     }
                 }
             }
         }
-        dismiss() // used dismiss the envirnment created way above, this will dismiss the SearchView
+        dismiss() // used dismiss the envirnment created on top, this will dismiss the SearchView
+    }
+
+    private func saveCityList() {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(cities) {
+            UserDefaults.standard.set(encoded, forKey: "CityList")
+        }
     }
 }
