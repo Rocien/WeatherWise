@@ -17,29 +17,32 @@ struct AboutView: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.bottom, 10)
+                .foregroundStyle(.white)
 
             Text("Version 1.0")
                 .font(.subheadline)
-                .foregroundColor(.gray)
+                .foregroundStyle(.white.opacity(0.7))
 
             Spacer().frame(height: 20)
 
             Text("Developed and Designed by Rocien Nkunga")
                 .font(.body)
+                .foregroundStyle(.white)
 
             Text("Copyright © 2024 Rocien Nkunga")
                 .font(.caption)
-                .foregroundColor(.gray)
+                .foregroundStyle(.white.opacity(0.7))
 
             Spacer().frame(height: 20)
 
             Text("WeatherWise is a sleek and feature-rich weather app designed to provide users with accurate, real-time weather updates and forecasts. Developed by Rocien Nkunga, an experienced iOS, Flutter, and React Native developer, the app reflects a passion for crafting intuitive and visually appealing mobile experiences. WeatherWise empowers users with essential weather insights while showcasing a seamless blend of technology and design.")
                 .font(.footnote)
+                .foregroundStyle(.white)
 
             Spacer()
 
             // Display image with hidden feature
-            Image(showAlternateImage ? "rocienProfile2" : "rocienProfile-4")
+            Image(showAlternateImage ? "rocienProfile-4" : "rocienProfile2")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 200, height: 200)
@@ -55,6 +58,7 @@ struct AboutView: View {
             VStack(spacing: 10) {
                 Text("Contact Me")
                     .font(.headline)
+                    .foregroundStyle(.white)
 
                 // Email
                 Text("contact@rociennkunga.com")
@@ -78,7 +82,7 @@ struct AboutView: View {
         }
         .padding()
         .background(
-            Image("background-2")
+            Image("background")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()

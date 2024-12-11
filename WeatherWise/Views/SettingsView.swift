@@ -14,27 +14,26 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Time Refresh Interval")) {
+                Section(header: Text("Time Refresh Interval").foregroundStyle(.white)) {
                     Picker("Refresh Interval", selection: $selectedInterval) {
                         ForEach(refreshOptions, id: \.self) { option in
                             Text("\(option) minutes").tag(option)
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
-//                    .onChange(of: selectedInterval) { newValue in
                     .onChange(of: selectedInterval, initial: true) { _, newValue in
                         UserDefaults.standard.set(newValue, forKey: "RefreshInterval")
                     }
                 }
 
-                Section(header: Text("About")) {
+                Section(header: Text("About").foregroundStyle(.white)) {
                     NavigationLink(destination: AboutView()) {
                         Text("About the App")
                     }
                 }
             }
             .background(
-                Image("background-2")
+                Image("background-v2")
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()

@@ -96,18 +96,19 @@ struct CityListView: View {
             )
             .scrollContentBackground(.hidden)
             .navigationTitle("City List")
-//            .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.clear, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton() // Ensures the Edit button remains
+                    EditButton() // edit button
+                        .foregroundColor(.white)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        isShowingSearch.toggle() // Toggles the SearchView
+                        isShowingSearch.toggle() // toggles the SearchView
                     }) {
                         Image(systemName: "magnifyingglass")
+                            .foregroundColor(.white)
                     }
                 }
             }
