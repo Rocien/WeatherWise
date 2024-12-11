@@ -10,6 +10,9 @@ import SwiftUI
 
 @main
 struct WeatherWiseApp: App {
+    @AppStorage("DarkModeEnabled") private var isDarkMode = false // this is the global dark mode state
+
+    // initilizing the setupTabBarAppearance for tab bar styling
     init() {
         setupTabBarAppearance()
     }
@@ -17,12 +20,13 @@ struct WeatherWiseApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.colorScheme, isDarkMode ? .dark : .light) // here propagating environment
         }
     }
 
     private func setupTabBarAppearance() {
         let appearance = UITabBarAppearance() // created "appearance" variable
-        
+
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor.black.withAlphaComponent(0.6)
 

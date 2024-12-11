@@ -9,7 +9,10 @@ import SwiftUI
 
 struct SettingsView: View {
     @State private var selectedInterval: Int = UserDefaults.standard.integer(forKey: "RefreshInterval") == 0 ? 15 : UserDefaults.standard.integer(forKey: "RefreshInterval")
-    let refreshOptions = [5, 10, 15, 30, 60] // Available options in minutes
+    let refreshOptions = [5, 10, 15, 30, 60] // available options in minutes
+
+    // app dark and light mode state
+    @AppStorage("DarkModeEnabled") private var isDarkMode = false // syncing with global dark mode state
 
     var body: some View {
         NavigationView {
@@ -31,6 +34,10 @@ struct SettingsView: View {
                         Text("About the App")
                     }
                 }
+
+                Toggle("Dark Mode", isOn: $isDarkMode) // here it syncs with global state
+
+                Spacer()
             }
             .background(
                 Image("background-v2")
