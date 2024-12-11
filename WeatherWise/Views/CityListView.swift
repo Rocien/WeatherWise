@@ -167,7 +167,7 @@ struct CityListView: View {
                             temperature: "\(Int(weather.main.temp))°C",
                             weatherDescription: weather.weather.first?.description.capitalized ?? "Unknown",
                             icon: mapWeatherIcon(weather.weather.first?.icon ?? "questionmark"),
-                            localTime: getCurrentLocalTime(for: weather.timezone),
+                            localTime: getCurrentLocalDateTime(for: weather.timezone),
                             coord: CityCoord(lat: weather.coord.lat, lon: weather.coord.lon)
                         )
                         withAnimation {

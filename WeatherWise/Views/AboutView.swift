@@ -28,6 +28,7 @@ struct AboutView: View {
             Text("Developed and Designed by Rocien Nkunga")
                 .font(.body)
                 .foregroundStyle(.white)
+                .fontWeight(.bold)
 
             Text("Copyright © 2024 Rocien Nkunga")
                 .font(.caption)

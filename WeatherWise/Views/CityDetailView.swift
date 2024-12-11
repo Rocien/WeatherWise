@@ -41,8 +41,8 @@ struct CityDetailView: View {
             if let weatherDetails = weatherDetails {
                 LinearGradient(
                     gradient: Gradient(colors: [
-                        temperatureColor(for: weatherDetails.main.temp).opacity(0.8), // Bottom intense color
-                        temperatureColor(for: weatherDetails.main.temp).opacity(0.5) // Top transparent color
+                        temperatureColor(for: weatherDetails.main.temp).opacity(0.9), // Bottom intense color
+                        temperatureColor(for: weatherDetails.main.temp).opacity(0.2) // Top transparent color
                     ]),
                     startPoint: .bottom, // starts at the bottom
                     endPoint: .top // fades towards the top
@@ -138,11 +138,16 @@ struct TopSection: View {
                 .font(.system(size: 80))
                 .fontWeight(.light)
                 .foregroundColor(.white)
+                .fontWeight(.bold)
                 .onTapGesture {
                     withAnimation {
                         isCelsius.toggle()
                     }
                 }
+            Text(getCurrentLocalDateTime(for: weatherDetails.timezone))
+                .font(.system(size: 15))
+                .fontWeight(.medium)
+                .foregroundColor(.white)
         }
         .padding()
     }

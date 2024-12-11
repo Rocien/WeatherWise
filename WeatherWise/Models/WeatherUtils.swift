@@ -26,14 +26,14 @@ func mapWeatherIcon(_ iconCode: String) -> String { // this function takes a str
     }
 }
 
-// Calculates the local time for a city using the timezone offset
-func getCurrentLocalTime(for timezoneOffset: Int) -> String {
+// Calculates the local time for a city using the timezone offset and date
+func getCurrentLocalDateTime(for timezoneOffset: Int, format: String = "yyyy - MMM - dd") -> String {
     let utcDate = Date()
     let localDate = utcDate.addingTimeInterval(TimeInterval(timezoneOffset))
 
     let dateFormatter = DateFormatter()
     dateFormatter.timeZone = TimeZone(secondsFromGMT: timezoneOffset)
-    dateFormatter.dateFormat = "hh:mm a"
+    dateFormatter.dateFormat = format
 
     return dateFormatter.string(from: localDate)
 }
